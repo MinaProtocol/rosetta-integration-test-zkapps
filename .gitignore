@@ -1,0 +1,8 @@
+# NodeJS
+**/node_modules
+**/build
+**/coverage
+
+# zkApp config
+**/keys
+**/config.json
