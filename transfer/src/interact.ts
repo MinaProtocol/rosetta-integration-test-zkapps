@@ -59,11 +59,11 @@ try {
   console.log('build transaction and create proof...');
 
   let tx = await Mina.transaction({ sender: feepayerAddress, fee }, () => {
-    const feePayerUpdate = AccountUpdate.fundNewAccount(feepayerAddress);
+    const feePayerUpdate = AccountUpdate.createSigned(feepayerAddress);
     feePayerUpdate.send({ to: zkAppAddress, amount: UInt64.from(500) });
     zkApp.transfer(PublicKey.fromBase58(recipientAddress), UInt64.from(amount));
   });
-  tx.sign([zkAppKey, feepayerKey]);
+  tx.sign([feepayerKey]);
   await tx.prove();
   console.log('send transaction...');
   let sentTx = await tx.send();
