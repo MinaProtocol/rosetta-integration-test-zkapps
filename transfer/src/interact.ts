@@ -1,5 +1,5 @@
 import fs from 'fs/promises';
-import { Mina, PrivateKey, PublicKey, UInt64 } from 'snarkyjs';
+import { AccountUpdate, Mina, PrivateKey, PublicKey, UInt64 } from 'snarkyjs';
 import { Transfer } from './Transfer.js';
 
 // check command line arg
@@ -59,9 +59,11 @@ try {
   console.log('build transaction and create proof...');
 
   let tx = await Mina.transaction({ sender: feepayerAddress, fee }, () => {
+    const feePayerUpdate = AccountUpdate.fundNewAccount(feepayerAddress);
+    feePayerUpdate.send({ to: zkAppAddress, amount: UInt64.from(500) });
     zkApp.transfer(PublicKey.fromBase58(recipientAddress), UInt64.from(amount));
   });
-  tx.sign([feepayerKey]);
+  tx.sign([zkAppKey, feepayerKey]);
   await tx.prove();
   console.log('send transaction...');
   let sentTx = await tx.send();

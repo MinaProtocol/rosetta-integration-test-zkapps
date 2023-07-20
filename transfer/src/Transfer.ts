@@ -8,15 +8,8 @@ import {
 } from 'snarkyjs';
 
 export class Transfer extends SmartContract {
-  initialBalance: string | number | UInt64 | undefined;
-
-  constructor(
-    zkAppAddress: PublicKey,
-    initialBalance?: string | number | UInt64 | undefined
-  ) {
+  constructor(zkAppAddress: PublicKey) {
     super(zkAppAddress);
-
-    this.initialBalance = initialBalance;
   }
 
   deploy(args: DeployArgs) {
@@ -25,9 +18,6 @@ export class Transfer extends SmartContract {
       ...Permissions.default(),
       send: Permissions.proofOrSignature(),
     });
-    if (this.initialBalance != undefined) {
-      this.balance.addInPlace(this.initialBalance);
-    }
   }
 
   @method transfer(receiverAddress: PublicKey, amount: UInt64) {
